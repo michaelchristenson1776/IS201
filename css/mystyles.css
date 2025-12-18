@@ -1,5 +1,5 @@
 body{
-    background-image: url(/assets/img/cosmere-star-chart_bg.jpeg);
+    background-image: url(../assets/img/cosmere-star-chart_bg.jpeg);
     background-size: cover;          /* fill the viewport while preserving aspect ratio */
     background-position: center;     /* center the image */
     background-repeat: no-repeat;    /* avoid tiling */
