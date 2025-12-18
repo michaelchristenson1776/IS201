@@ -1,8 +1,238 @@
 body{
-    font-family: Chiller;
+    background-image: url(/assets/img/cosmere-star-chart_bg.jpeg);
+    background-size: cover;          /* fill the viewport while preserving aspect ratio */
+    background-position: center;     /* center the image */
+    background-repeat: no-repeat;    /* avoid tiling */
+    background-attachment: fixed; 
 }
 
-h1{
-    font-family: "Comic Sans MS" !important;
+:root {
+    --overlay-color: rgba(255,255,255,0.85); /* adjust for darker/light text */
+    --text-color: #0b2545;
+    --fallback-bg: #0b2545; /* used while image loads or if it fails */
 }
 
+.content {
+    max-width: 1100px;
+    margin: 1rem auto 3rem auto;  /* add extra top space for fixed nav */
+    padding: 2rem;
+    background: var(--overlay-color);
+    color: var(--text-color);
+    border-radius: 12px;
+    box-shadow: 0 8px 30px rgba(0,0,0,0.25);
+}
+
+.content h3 {
+  font-size: 1.75rem;      /* try 1.5–2rem to taste */
+  /* margin-top: 2rem;        /* optional extra spacing above */
+  margin-bottom: 1rem;
+}
+
+
+.video-container {
+    position: relative;
+    width: 100%;             /* match .content’s width */
+    max-width: 100%;         /* no extra cap */
+    margin: 0 auto;
+    padding-bottom: 56.25%;  /* 9:16 (16:9) aspect ratio */
+    height: 0;
+}
+
+.video-container iframe {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+}
+
+/* Wrapper: centered box that looks like .content */
+.tableau-wrapper {
+  display: block;                     /* full-width block */
+  width: fit-content;                 /* shrink-wrap to inner width (modern browsers) */
+  margin: 3rem auto;                  /* center horizontally */
+  background: var(--overlay-color);
+  color: var(--text-color);
+  border-radius: 12px;
+  box-shadow: 0 8px 30px rgba(0, 0, 0, 0.25);
+  padding: 2rem;                      /* margin around viz inside the box */
+}
+
+.tableau-wrapper h3 {
+  font-size: 1.75rem;      /* try 1.5–2rem to taste */
+  /* margin-top: 2rem;        /* optional extra spacing above */
+  margin-bottom: 1rem;
+}
+
+/* Inner container: only handles size + aspect ratio */
+.tableau-container {
+  position: relative;
+  width: 81vw;                        /* or your preferred width */
+  max-width: none;                   /* optional cap */
+  padding-bottom: 60%;                /* aspect ratio */
+  height: 0;
+}
+
+.tableau-container iframe {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100% !important;
+    height: 100% !important;
+}
+
+.tableauPlaceholder {
+    position: absolute !important;
+    top: 0;
+    left: 0;
+    width: 100% !important;
+    height: 100% !important;
+}
+
+.footer {
+    position: relative;
+    background-color: goldenrod;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    height: auto;
+    text-align: center;
+}
+
+.footer a {
+    color: #0b2545;
+}
+
+.header-wrapper {
+  position: relative;
+  margin-top: 3rem;  /* push header down below fixed nav */
+}
+
+.header {
+    position: relative;
+    display: block;
+    background-color: goldenrod;
+    color: var(--text-color);
+    left: 0;
+    right: 0;
+    top: 0;
+    height: auto;
+    text-align: center;
+    padding: 25px;
+}
+
+.header h1 {
+    font-family: "PT Serif", Georgia, "Times New Roman", serif;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 0.08em;   /* a bit of tracking helps all‑caps readability */
+}
+
+.header h2 {
+    font-family: "PT Serif", Georgia, "Times New Roman", serif;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 0.08em;   /* a bit of tracking helps all‑caps readability */
+}
+
+.header h4 {
+    font-family: "PT Serif", Georgia, "Times New Roman", serif;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 0.08em;   /* a bit of tracking helps all‑caps readability */
+}
+
+/* nav stuck to bottom of header, then to top when scrolling */
+.main-nav {
+    position: fixed;          /* was: sticky */
+    top: 0;                   /* stick to top of viewport */
+    left: 0;
+    right: 0;
+    display: flex;
+    justify-content: center;
+    gap: 1.5rem;
+    padding: 0.75rem 1rem;
+    background-color: goldenrod;
+    opacity: 1;
+    transition: opacity 0.3s ease;
+    z-index: 1000;
+}
+
+.main-nav a {
+    color: 0b2545;
+    text-decoration: none;
+    font-weight: 600;
+}
+
+/* when not overlapping header (scrolled), make it 50% opaque */
+.main-nav.nav-scrolled {
+    opacity: 0.5;
+}
+
+/* All in-page anchors stop 4rem below the top (under nav) */
+.page-link{
+    scroll-margin-top: 4rem;
+}
+
+/* #book-list {
+    scroll-margin-top: 4rem;
+}
+
+#reading-order {
+    scroll-margin-top: 4rem;
+}
+
+#viz {
+    scroll-margin-top: 4rem;
+}
+
+#cosmere-definition {
+    scroll-margin-top: 4rem;
+} */
+
+#top {
+    scroll-margin-top: 4rem;
+} 
+
+.navImg {
+    max-width: 50px;
+    max-height: 50px;
+    width: 100%;       /* Ensures responsiveness within its container */
+    height: auto;      /* Maintains the aspect ratio */
+    object-fit: contain; /* Ensures the whole image is visible within the bounds */
+}
+
+#threnody-nav-icon {
+    max-width: 70px;
+    max-height: 70px;
+    margin-left: -10px;
+}
+
+.planet-nav {
+  display: flex;
+  justify-content: center;  /* center the icons horizontally */
+  align-items: center;
+  gap: 0.75rem;             /* space between icons */
+  flex-wrap: wrap;          /* allow wrap on small screens */
+  margin: 1rem 0 1rem 0;  /* optional spacing above/below */
+}
+
+.planet-name {
+    font-weight: bold;
+}
+
+.book-list-columns {
+  column-count: 1;
+  column-gap: 2rem;
+}
+
+@media (min-width: 900px) {
+  .book-list-columns {
+    column-count: 2;
+  }
+}
+
+/* keep each planet block in a single column */
+.book-list-columns .planet-section {
+  break-inside: avoid;
+}
