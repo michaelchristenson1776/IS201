@@ -4,51 +4,337 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Scratch Page</title>
+    <link rel="icon" type="image/x-icon" href="assets/blogsmere_icon.ico" />
     <link href="css/styles.css" rel="stylesheet" />
+    <link href="css/mystyles.css" rel="stylesheet" />
+    <link href="https://fonts.googleapis.com/css2?family=DM+Serif+Display:ital@0;1&family=PT+Serif:ital,wght@0,400;0,700;1,400;1,700&family=Playfair+Display:ital,wght@0,400..900;1,400..900&display=swap" rel="stylesheet">
 </head>
-<body>
-    <h1>Elantris</h1>
-    <h2>The sleeper favorite book</h2>
-
-    
-    <iframe width="560" height="315" src="https://www.youtube.com/embed/RXyWtp8tuYY?si=nKVLTD8Jv79WYmgf" title="YouTube video player" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" referrerpolicy="strict-origin-when-cross-origin" allowfullscreen></iframe>
-    <div class='tableauPlaceholder' id='viz1765243865025' style='position: relative'>
-        <noscript>
-            <a href='#'>
-                <img alt='Dashboard 1 ' src='https:&#47;&#47;public.tableau.com&#47;static&#47;images&#47;Re&#47;ReadingLogAnalysis&#47;Dashboard1&#47;1_rss.png' style='border: none' />
+<body class="page-link" id="top">
+    <div class="header-wrapper">
+        <div class="header" id="site-header">
+            <h1>Brandon Sanderson's Cosmere:</h1>
+            <h2>The MCU before the MCU was cool</h2>
+            <h4>and then was not cool again</h4>
+        </div>
+        <nav class="main-nav" id="main-nav">
+            <a href="/index.html">My Resume</a> | 
+            <a href="#cosmere-definition">What is the Cosmere</a> | 
+            <a href="#book-list">Cosmere Booklist</a> | 
+            <a href="#reading-order">Reading Order</a> | 
+            <a href="#viz">By the Numbers</a>
+        </nav>
+    </div>
+    <div class="content">
+        <h3 class="page-link" id="cosmere-definition">What is the Cosmere?</h3>
+        <p>
+            The Cosmere is a fictional shared universe where many of Brandon Sanderson's books take place. As a result, books set in the Cosmere share a single cosmology and underlying rules of magic, and some characters from one world will make appearances on other worlds. Despite the connections, Brandon has remained clear that one does not need any knowledge of the broader Cosmere to read, understand, or enjoy books that take place in the Cosmere.
+        </p>
+        <p>
+            The core sequence of the Cosmere will consist of the Dragonsteel series, the Elantris trilogy, at least four eras of the Mistborn series, and The Stormlight Archive. The story of the Cosmere does not include any books that reference Earth, as Earth is not in the Cosmere. For a complete list of books in the Cosmere, see the bibliography section below.
+        </p>
+        <p>
+            The shared "creation myth" of the Cosmere revolves around Adonalsium, the power of creation, which was broken into sixteen pieces called Shards in an event known as the Shattering of Adonalsium. The Shards are effectively gods, and magic is derived from their power.
+        </p>
+        <h3 class="page-link" id="book-list">Brandon's Books (ordered by Planet, then Series)</h3>
+        <nav class="planet-nav">
+            <a href="#loc-cosmere-general">
+                <img src="/assets/img/cosmere-icon.svg" alt="General Cosmere" title="General Cosmere" class="navImg">
             </a>
-        </noscript>
-        <object class='tableauViz'  style='display:none;'>
-            <param name='host_url' value='https%3A%2F%2Fpublic.tableau.com%2F' />
-            <param name='embed_code_version' value='3' />
-            <param name='site_root' value='' />
-            <param name='name' value='ReadingLogAnalysis&#47;Dashboard1' />
-            <param name='tabs' value='no' /><param name='toolbar' value='yes' />
-            <param name='static_image' value='https:&#47;&#47;public.tableau.com&#47;static&#47;images&#47;Re&#47;ReadingLogAnalysis&#47;Dashboard1&#47;1.png' />
-            <param name='animate_transition' value='yes' />
-            <param name='display_static_image' value='yes' />
-            <param name='display_spinner' value='yes' />
-            <param name='display_overlay' value='yes' />
-            <param name='display_count' value='yes' />
-            <param name='language' value='en-US' />
-        </object>
-    </div>                
-    <script type='text/javascript'>                    
-        var divElement = document.getElementById('viz1765243865025');                    
+            <a href="#loc-drominad">
+                <img src="/assets/img/loc-drominad_icon.svg" alt="Drominad" title="Drominad" class="navImg">
+            </a>
+            <a href="#loc-komashi">
+                <img src="/assets/img/loc-komashi-icon.svg" alt="Komashi" title="Komashi" class="navImg">
+            </a>
+            <a href="#loc-nalthis">
+                <img src="/assets/img/loc-nalthis-icon.png" alt="Nalthis" title="Nalthis" class="navImg">
+            </a>
+            <a href="#loc-roshar">
+                <img src="/assets/img/loc-roshar-icon.svg" alt="Roshar" title="Roshar" class="navImg">
+            </a>
+            <a href="#loc-scadrial">
+                <img src="/assets/img/loc-scadrial-icon.png" alt="Scadrial" title="Scadrial" class="navImg">
+            </a>
+            <a href="#loc-sel">
+                <img src="/assets/img/loc-sel-icon.svg" alt="Sel" title="Sel" class="navImg">
+            </a>
+            <a href="#loc-taldain">
+                <img src="/assets/img/loc-taldain-icon.png" alt="Taldain" title="Taldain" class="navImg">
+            </a>
+            <a href="#loc-threnody">
+                <img src="/assets/img/loc-threnody-icon.svg" alt="Threnody" title="Threnody" class="navImg" id="threnody-nav-icon">
+            </a>
+        </nav>
+        <div class="book-list-columns">
+            <ul>
+                <div class="planet-section">
+                    <li class="page-link" id="loc-cosmere-general">
+                        <span class="planet-name">Cosmere</span>
+                        <ul>
+                            <li>Arcanum Unbounded (anthology)</li>
+                        </ul>
+                    </li>
+                </div>
+                <div class="planet-section">
+                    <li class="page-link" id="loc-canticle">
+                        <span class="planet-name">Canticle</span>
+                        <ul>
+                            <li>The Sunlit Man</li>
+                        </ul>
+                    </li>
+                </div>
+                <div class="planet-section">
+                    <li class="page-link" id="loc-drominad">
+                        <span class="planet-name">First of the Sun/Drominad</span>
+                        <ul>
+                            <li>Sixth of the Dusk (Novella)</li>
+                            <li>Isles of the Emberdark</li>
+                        </ul>
+                    </li>
+                </div>
+                <div class="planet-section">
+                    <li class="page-link" id="loc-komashi">
+                        <span class="planet-name">Komashi</span>
+                        <ul>
+                            <li>Yumi and the Nightmare Painter</li>
+                        </ul>
+                    </li>
+                </div>
+                <div class="planet-section">
+                    <li class="page-link" id="loc-lumar">
+                        <span class="planet-name">Lumar</span>
+                        <ul>
+                            <li>Tress of the Emerald Sea</li>
+                        </ul>
+                    </li>
+                </div>
+                <div class="planet-section">
+                    <li class="page-link" id="loc-nalthis">
+                        <span class="planet-name">Nalthis</span>
+                        <ul>
+                            <li>Warbreaker</li>
+                        </ul>
+                    </li>
+                </div>
+                <div class="planet-section">
+                    <li class="page-link" id="loc-roshar">
+                        <span class="planet-name">Roshar</span>
+                        <ul>
+                            <li>
+                                The Stormlight Archive
+                                <ul>
+                                    <li>
+                                        Mainline Entries
+                                        <ol>
+                                            <li>The Way of Kings</li>
+                                            <li>Words of Radiance</li>
+                                            <li>Oathbringer</li>
+                                            <li>Rhythm of War</li>
+                                            <li>Wind and Truth</li>
+                                        </ol>
+                                    </li>
+                                    <li>
+                                        Short Fiction
+                                        <ol>
+                                            <li>Edgedancer (Novella)</li>
+                                            <li>Dawnshard (Novella)</li>
+                                            <li>Elsecaller (Short Story)</li>
+                                            <li>King Lopen the First of Alethkar (Short Story)</li>
+                                        </ol>
+                                    </li>
+                                </ul>
+                            </li>
+                        </ul>
+                    </li>
+                </div>
+                <div class="planet-section">
+                    <li class="page-link" id="loc-scadrial">
+                        <span class="planet-name">Scadrial</span>
+                        <ol>
+                            <li>
+                                Mistborn: The Original Trilogy
+                                <ul>
+                                    <li>
+                                        Mainline Entries
+                                        <ol>
+                                            <li>Mistborn: The Final Empire</li>
+                                            <li>The Well of Ascension</li>
+                                            <li>The Hero of Ages</li>
+                                        </ol>
+                                    </li>
+                                    <li>
+                                        Short Fiction
+                                        <ol>
+                                            <li>The Eleventh Metal (Short Story)</li>
+                                            <li>Mistborn: Secret History (Novella)</li>
+                                        </ol>
+                                    </li>
+                                </ul>
+                            </li>
+                            <li>
+                                Mistborn: Wax and Wayne
+                                <ul>
+                                    <li>
+                                        Mainline Entries
+                                        <ol>
+                                            <li>The Alloy of Law</li>
+                                            <li>Shadows of Self</li>
+                                            <li>The Bands of Mourning</li>
+                                            <li>The Lost Metal</li>
+                                        </ol>
+                                    </li>
+                                    <li>
+                                        Short Fiction
+                                        <ul>
+                                            <li>Allomancer Jak and the Pits of Eltania (Short Story)</li>
+                                        </ul>
+                                    </li>
+                                </ul>
+                            </li>
+                        </ol>
+                    </li>
+                </div>
+                <div class="planet-section">
+                    <li class="page-link" id="loc-sel">
+                        <span class="planet-name">Sel</span>
+                        <ul>
+                            <li>
+                                Elantris
+                                <ul>
+                                    <li>
+                                        Mainline Entries
+                                        <ul>
+                                            <li>Elantris</li>
+                                        </ul>
+                                    </li>
+                                    <li>
+                                        Short Fiction
+                                        <ul>
+                                            <li>The Hope of Elantris</li>
+                                        </ul>
+                                    </li>
+                                </ul>
+                            </li>
+                            <li>The Emperor's Soul (Novella)</li>
+                        </ul>
+                    </li>
+                </div>
+                <div class="planet-section">
+                    <li class="page-link" id="loc-taldain">
+                        <span class="planet-name">Taldain</span>
+                        <ul>
+                            <li>White Sand (Graphic Novel)</li>
+                        </ul>
+                    </li>
+                </div>
+                <div class="planet-section">
+                    <li class="page-link" id="loc-threnody">
+                        <span class="planet-name">Threnody</span>
+                        <ul>
+                            <li>Shadows for Silence in the Forests of Hell (Novella)</li>
+                        </ul>
+                    </li>
+                </div>
+            </ul>
+        </div>
+        <h3 class="page-link" id="reading-order">My recommended reading order</h3>
+        <div class="video-container">
+            <iframe 
+                src="https://www.youtube.com/embed/mDXnCsHhCvc?si=DMLUVAQrgAMD8Aru"
+                title="YouTube video player" frameborder="0" 
+                allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"
+                referrerpolicy="strict-origin-when-cross-origin" allowfullscreen>
+            </iframe>
+        </div>
+    </div>
+    <div class="tableau-wrapper">
+        <h3 class="page-link" id="viz">Tableau Visualization:</h3>
+        <div class="tableau-container">
+            <div class='tableauPlaceholder' id='viz1765517865881' style='position: relative'>
+                <noscript>
+                    <a href='#'>
+                        <img alt='Dashboard 1 ' 
+                            src='https:&#47;&#47;public.tableau.com&#47;static&#47;images&#47;Br&#47;BrandonSandersonsCosmereByTheNumbers&#47;Dashboard1&#47;1_rss.png'
+                            style='border: none' />
+                    </a>
+                </noscript>
+                <object class='tableauViz'  style='display:none;'>
+                    <param name='host_url' value='https%3A%2F%2Fpublic.tableau.com%2F' />
+                    <param name='embed_code_version' value='3' /> 
+                    <param name='site_root' value='' />
+                    <param name='name' value='BrandonSandersonsCosmereByTheNumbers&#47;Dashboard1' />
+                    <param name='tabs' value='no' />
+                    <param name='toolbar' value='yes' />
+                    <param name='static_image' value='https:&#47;&#47;public.tableau.com&#47;static&#47;images&#47;Br&#47;BrandonSandersonsCosmereByTheNumbers&#47;Dashboard1&#47;1.png' /> 
+                    <param name='animate_transition' value='yes' />
+                    <param name='display_static_image' value='yes' />
+                    <param name='display_spinner' value='yes' />
+                    <param name='display_overlay' value='yes' />
+                    <param name='display_count' value='yes' />
+                    <param name='language' value='en-US' />
+                    <param name='filter' value='publish=yes' />
+                </object>
+            </div>  
+        </div>
+    </div>
+              
+    <script type='text/javascript'>
+        var divElement = document.getElementById('viz1765517865881');                    
         var vizElement = divElement.getElementsByTagName('object')[0];                    
-        if ( divElement.offsetWidth > 800 ) { 
-            vizElement.style.width='1000px';vizElement.style.height='827px';
-            } 
-        else if ( divElement.offsetWidth > 500 ) { 
-            vizElement.style.width='1000px';vizElement.style.height='827px';
-        } 
-        else { 
-            vizElement.style.width='100%';vizElement.style.height='727px';
-        }                     
-        var scriptElement = document.createElement('script');                    
+        
+        // Always scale with container
+        vizElement.style.width = '100%';
+        vizElement.style.height = '100%';
+
+        var scriptElement = document.createElement('script');                  
         scriptElement.src = 'https://public.tableau.com/javascripts/api/viz_v1.js';                    
         vizElement.parentNode.insertBefore(scriptElement, vizElement);                
     </script>
 
+    <!-- opacity of nav bar while scrolling -->
+   <script>
+        const nav = document.getElementById('main-nav');
+
+        let lastScrollY = window.scrollY;
+        let lastTime = performance.now();
+        let clickTimeout = null;
+
+        // Fade based on scroll speed
+        window.addEventListener('scroll', () => {
+            const now = performance.now();
+            const dy = Math.abs(window.scrollY - lastScrollY);
+            const dt = now - lastTime || 16;
+
+            const speed = dy / dt;          // pixels per ms
+            const maxSpeed = 1;
+            const minOpacity = 0.5;
+            const maxOpacity = 1.0;
+
+            const t = Math.min(speed / maxSpeed, 1);
+            const opacity = maxOpacity - t * (maxOpacity - minOpacity);
+
+            nav.style.opacity = opacity.toFixed(2);
+
+            lastScrollY = window.scrollY;
+            lastTime = now;
+        });
+
+        // After clicking a nav link, wait for scroll to finish, then set opacity to 1
+        nav.querySelectorAll('a').forEach(link => {
+            link.addEventListener('click', () => {
+            if (clickTimeout) {
+                clearTimeout(clickTimeout);
+            }
+            // Delay should be a bit longer than your smooth scroll duration
+            clickTimeout = setTimeout(() => {
+                nav.style.opacity = '1';
+            }, 750); // adjust (in ms) if your scroll is faster/slower
+            });
+        });
+    </script>
+
+    <div class="footer">
+        <a href="#top">Top of the page</a>
+    </div>
 </body>
 </html>

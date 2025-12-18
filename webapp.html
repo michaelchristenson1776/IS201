@@ -1,0 +1,923 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8" />
+    <title>Pacman Web App</title>
+    <style>
+        :root {
+            --bg: #000014;
+            --wall: #0011aa;
+            --tunnel: #050015;
+            --pellet: #ffe6a3;
+            --power: #ffb347;
+            --pacman: #ffe600;
+            --ghost-red: #ff4b4b;
+            --ghost-pink: #ff8ad4;
+            --ghost-cyan: #4bfaff;
+            --ghost-orange: #ffb347;
+            --ghost-scared: #294cff;
+            --ui-text: #f8f8ff;
+            --ui-muted: #9fa4ff;
+            --border: #3b3fff;
+            --shadow-soft: 0 0 24px rgba(64, 64, 255, 0.45);
+        }
+
+        * {
+            box-sizing: border-box;
+        }
+
+        html,
+        body {
+            margin: 0;
+            padding: 0;
+            width: 100%;
+            height: 100%;
+            background: radial-gradient(circle at top, #151535 0, #000008 45%, #000000 100%);
+            font-family: system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+            color: var(--ui-text);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        body::before {
+            content: "";
+            position: fixed;
+            inset: -40px;
+            background:
+                radial-gradient(circle at 20% 10%, rgba(100, 100, 255, 0.16) 0, transparent 50%),
+                radial-gradient(circle at 80% 90%, rgba(255, 80, 80, 0.18) 0, transparent 55%);
+            opacity: 0.9;
+            pointer-events: none;
+            mix-blend-mode: screen;
+            z-index: -2;
+        }
+
+        .shell {
+            position: relative;
+            padding: 18px 18px 14px;
+            border-radius: 26px;
+            background:
+                radial-gradient(circle at top, rgba(100, 100, 255, 0.16) 0, transparent 65%),
+                radial-gradient(circle at bottom, rgba(255, 200, 80, 0.12) 0, transparent 65%),
+                linear-gradient(135deg, #01001b 0, #020018 40%, #000000 100%);
+            box-shadow:
+                0 24px 60px rgba(0, 0, 0, 0.8),
+                0 0 40px rgba(75, 90, 255, 0.35);
+            border: 1px solid rgba(130, 135, 255, 0.35);
+            backdrop-filter: blur(16px) saturate(140%);
+            -webkit-backdrop-filter: blur(16px) saturate(140%);
+        }
+
+        .shell::before {
+            content: "";
+            position: absolute;
+            inset: -2px;
+            border-radius: 27px;
+            border: 1px solid rgba(255, 255, 255, 0.12);
+            pointer-events: none;
+            mix-blend-mode: screen;
+        }
+
+        .shell-header {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            margin-bottom: 10px;
+            padding: 0 2px;
+        }
+
+        .title {
+            display: flex;
+            flex-direction: column;
+            gap: 0;
+        }
+
+        .title-main {
+            font-weight: 700;
+            font-size: 20px;
+            letter-spacing: 0.16em;
+            text-transform: uppercase;
+            color: #fdfdff;
+            text-shadow:
+                0 0 10px rgba(255, 255, 0, 0.55),
+                0 0 18px rgba(255, 255, 255, 0.35);
+        }
+
+        .title-sub {
+            font-size: 11px;
+            color: var(--ui-muted);
+            letter-spacing: 0.28em;
+            text-transform: uppercase;
+            margin-top: 1px;
+        }
+
+        .hud {
+            display: flex;
+            align-items: center;
+            gap: 16px;
+            font-size: 13px;
+            color: var(--ui-muted);
+        }
+
+        .hud-group {
+            display: flex;
+            align-items: center;
+            gap: 6px;
+            padding: 5px 10px;
+            border-radius: 999px;
+            background: radial-gradient(circle at top, rgba(255, 255, 255, 0.08) 0, transparent 65%);
+            border: 1px solid rgba(110, 115, 255, 0.5);
+            box-shadow: 0 0 16px rgba(110, 115, 255, 0.5);
+        }
+
+        .hud-label {
+            text-transform: uppercase;
+            letter-spacing: 0.16em;
+            font-size: 10px;
+            opacity: 0.75;
+        }
+
+        .hud-value {
+            font-variant-numeric: tabular-nums;
+            font-size: 14px;
+            color: #fdfdff;
+        }
+
+        .btn-link {
+            color: #ffe6a3;
+            text-decoration: none;
+            font-size: 12px;
+            padding: 5px 10px;
+            border-radius: 999px;
+            border: 1px solid rgba(255, 230, 163, 0.65);
+            background: radial-gradient(circle at top, rgba(255, 230, 163, 0.18) 0, transparent 70%);
+            box-shadow: 0 0 16px rgba(255, 230, 163, 0.45);
+            display: inline-flex;
+            align-items: center;
+            gap: 6px;
+            cursor: pointer;
+        }
+
+        .btn-link span.icon {
+            font-size: 13px;
+            transform: translateY(0.5px);
+        }
+
+        .btn-link:hover {
+            background: radial-gradient(circle at top, rgba(255, 230, 163, 0.26) 0, transparent 70%);
+            box-shadow:
+                0 0 20px rgba(255, 230, 163, 0.6),
+                0 0 40px rgba(255, 230, 163, 0.25);
+        }
+
+        canvas {
+            display: block;
+            margin: 0 auto;
+            border-radius: 18px;
+            border: 2px solid rgba(71, 77, 255, 0.75);
+            box-shadow:
+                0 0 30px rgba(71, 77, 255, 0.8),
+                0 0 80px rgba(255, 230, 163, 0.35);
+            background: radial-gradient(circle at center, #050021 0, #010009 45%, #000004 100%);
+            image-rendering: pixelated;
+        }
+
+        .shell-footer {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-top: 8px;
+            font-size: 11px;
+            color: var(--ui-muted);
+            letter-spacing: 0.14em;
+            text-transform: uppercase;
+        }
+
+        .legend {
+            display: flex;
+            gap: 10px;
+            align-items: center;
+        }
+
+        .legend-item {
+            display: inline-flex;
+            align-items: center;
+            gap: 5px;
+        }
+
+        .dot {
+            width: 8px;
+            height: 8px;
+            border-radius: 999px;
+            box-shadow: 0 0 10px currentColor;
+        }
+
+        .dot.pac {
+            background-color: var(--pacman);
+            color: var(--pacman);
+        }
+
+        .dot.ghost-red {
+            background-color: var(--ghost-red);
+            color: var(--ghost-red);
+        }
+
+        .dot.ghost-pink {
+            background-color: var(--ghost-pink);
+            color: var(--ghost-pink);
+        }
+
+        .dot.ghost-cyan {
+            background-color: var(--ghost-cyan);
+            color: var(--ghost-cyan);
+        }
+
+        .dot.ghost-orange {
+            background-color: var(--ghost-orange);
+            color: var(--ghost-orange);
+        }
+
+        .hint {
+            opacity: 0.7;
+            font-size: 10px;
+        }
+
+        .hint span.key {
+            padding: 1px 5px;
+            border-radius: 4px;
+            border: 1px solid rgba(143, 149, 255, 0.8);
+            margin: 0 1px;
+            font-size: 9px;
+        }
+    </style>
+</head>
+
+<body>
+    <div class="shell">
+        <div class="shell-header">
+            <div class="title">
+                <div class="title-main">PAC‑MAN</div>
+                <div class="title-sub">NEO ARCADE SIM</div>
+            </div>
+
+            <div class="hud">
+                <a class="btn-link" href="index.html">
+                    <span class="icon">←</span>
+                    <span>Back to homepage</span>
+                </a>
+                <div class="hud-group">
+                    <div class="hud-label">Score</div>
+                    <div class="hud-value" id="score">00000</div>
+                </div>
+            </div>
+        </div>
+
+        <canvas id="gameCanvas" width="560" height="620"></canvas>
+
+        <div class="shell-footer">
+            <div class="legend">
+                <div class="legend-item">
+                    <span class="dot pac"></span><span>PAC‑MAN</span>
+                </div>
+                <div class="legend-item">
+                    <span class="dot ghost-red"></span><span>BLINKY</span>
+                </div>
+                <div class="legend-item">
+                    <span class="dot ghost-pink"></span><span>PINKY</span>
+                </div>
+                <div class="legend-item">
+                    <span class="dot ghost-cyan"></span><span>INKY</span>
+                </div>
+                <div class="legend-item">
+                    <span class="dot ghost-orange"></span><span>CLYDE</span>
+                </div>
+            </div>
+            <div class="hint">
+                Move with <span class="key">↑</span><span class="key">↓</span><span class="key">←</span><span
+                    class="key">→</span>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        const canvas = document.getElementById('gameCanvas');
+        const ctx = canvas.getContext('2d');
+        const scoreEl = document.getElementById('score');
+
+        const TILE = 20;
+        const ROWS = 31;
+        const COLS = 28;
+
+        const map = [
+            "############################",
+            "#............##............#",
+            "#.####.#####.##.#####.####.#",
+            "#o####.#####.##.#####.####o#",
+            "#.####.#####.##.#####.####.#",
+            "#..........................#",
+            "#.####.##.########.##.####.#",
+            "#.####.##.########.##.####.#",
+            "#......##....##....##......#",
+            "######.##### ## #####.######",
+            "######.##### ## #####.######",
+            "######.##          ##.######",
+            "######.## ### #### ##.######",
+            "######.## #      # ##.######",
+            "          #      #          ",
+            "######.## #      # ##.######",
+            "######.## ######## ##.######",
+            "######.##          ##.######",
+            "######.## ######## ##.######",
+            "######.## ######## ##.######",
+            "#............##............#",
+            "#.####.#####.##.#####.####.#",
+            "#.####.#####.##.#####.####.#",
+            "#o..##................##..o#",
+            "###.##.##.########.##.##.###",
+            "###.##.##.########.##.##.###",
+            "#......##....##....##......#",
+            "#.##########.##.##########.#",
+            "#.##########.##.##########.#",
+            "#..........................#",
+            "############################"
+        ];
+
+        const TUNNEL_ROW = 14;
+
+        const Directions = {
+            LEFT: { dx: -1, dy: 0 },
+            RIGHT: { dx: 1, dy: 0 },
+            UP: { dx: 0, dy: -1 },
+            DOWN: { dx: 0, dy: 1 }
+        };
+        const DIR_LIST = [Directions.LEFT, Directions.RIGHT, Directions.UP, Directions.DOWN];
+
+        function oppositeDir(dir) {
+            if (dir === Directions.LEFT) return Directions.RIGHT;
+            if (dir === Directions.RIGHT) return Directions.LEFT;
+            if (dir === Directions.UP) return Directions.DOWN;
+            if (dir === Directions.DOWN) return Directions.UP;
+            return dir;
+        }
+
+        function isWall(r, c) {
+            if (r < 0 || r >= ROWS || c < 0 || c >= COLS) return true;
+            return map[r][c] === '#';
+        }
+
+        function isInTunnel(r, c) {
+            return r === TUNNEL_ROW && (c <= 2 || c >= COLS - 3);
+        }
+
+        const pacman = {
+            x: 13.5,
+            y: 23,
+            dir: Directions.LEFT,
+            speed: 6
+        };
+
+        const ghosts = [
+            { x: 13, y: 11, dir: Directions.LEFT, speed: 5, color: 'red', state: 'active', isScared: false, scaredTimer: 0 },
+            { x: 13, y: 14, dir: Directions.LEFT, speed: 5, color: 'pink', state: 'house', releaseTimer: 2000 },
+            { x: 12, y: 14, dir: Directions.LEFT, speed: 5, color: 'cyan', state: 'house', releaseTimer: 4000 },
+            { x: 14, y: 14, dir: Directions.LEFT, speed: 5, color: 'orange', state: 'house', releaseTimer: 6000 }
+        ];
+
+        let score = 0;
+
+        const keys = {};
+        window.addEventListener('keydown', e => { keys[e.key] = true; });
+        window.addEventListener('keyup', e => { keys[e.key] = false; });
+
+        // Fixed timestep
+        let lastTime = 0;
+        let accumulator = 0;
+        const LOGIC_HZ = 60;
+        const DT_MS = 1000 / LOGIC_HZ;
+
+        let ghostMode = 'scatter';
+        let modeTimer = 7000;
+
+        let lives = 3;
+        pacman.alive = true;
+        pacman.deathTimer = 0;
+
+        function moveGrid(entity, dir, dt) {
+            const speed = entity.speed / 1000; // tiles per ms
+            let dist = speed * dt;
+
+            const cx = Math.round(entity.x);
+            const cy = Math.round(entity.y);
+
+            const dx = dir.dx;
+            const dy = dir.dy;
+
+            // Distance to next tile center in movement direction
+            let remaining;
+            if (dx !== 0) {
+                remaining = dx > 0 ? (cx + 1 - entity.x) : (entity.x - (cx - 1));
+            } else {
+                remaining = dy > 0 ? (cy + 1 - entity.y) : (entity.y - (cy - 1));
+            }
+
+            // Clamp so we NEVER pass center
+            const move = Math.min(dist, remaining);
+
+            entity.x += dx * move;
+            entity.y += dy * move;
+
+            // If we hit center exactly, snap ONCE
+            if (move === remaining) {
+                entity.x = Math.round(entity.x);
+                entity.y = Math.round(entity.y);
+                return true; // reached center
+            }
+
+            return false;
+        }
+
+        function updateGhostMode(dt) {
+            modeTimer -= dt;
+            if (modeTimer <= 0) {
+                if (ghostMode === 'scatter') {
+                    ghostMode = 'chase';
+                    modeTimer = 20000;
+                } else {
+                    ghostMode = 'scatter';
+                    modeTimer = 7000;
+                }
+            }
+        }
+
+        function moveGhost(ghost, dt) {
+            const speed = ghost.state === 'eyes' ? 9 : ghost.speed;
+            const step = speed * dt / 1000;
+
+            ghost.x += ghost.dir.dx * step;
+            ghost.y += ghost.dir.dy * step;
+        }
+
+        function isDirectionChange(oldDir, newDir) {
+            return oldDir !== newDir;
+        }
+
+        function snapToGrid(entity) {
+            entity.x = Math.round(entity.x);
+            entity.y = Math.round(entity.y);
+        }
+
+        function canMoveTile(entity, dir) {
+            const nx = Math.floor(entity.x + dir.dx + 0.5);
+            const ny = Math.floor(entity.y + dir.dy + 0.5);
+            return !isWall(ny, nx);
+        }
+
+        function handleInput() {
+            let newDir = pacman.dir;
+            if (keys['ArrowLeft']) newDir = Directions.LEFT;
+            if (keys['ArrowRight']) newDir = Directions.RIGHT;
+            if (keys['ArrowUp']) newDir = Directions.UP;
+            if (keys['ArrowDown']) newDir = Directions.DOWN;
+
+            if (isDirectionChange(pacman.dir, newDir)) {
+                // Only allow direction change if the new direction is not blocked.
+                if (canMoveTile(pacman, newDir)) {
+                    snapToGrid(pacman);          // Snap Pac-Man to nearest tile center on direction change.
+                    pacman.dir = newDir;
+                }
+            }
+        }
+
+        function moveWithCollision(entity, dir, dt, radiusTiles = 0.4) {
+            const tilesPerMs = entity.speed / 1000;
+            const dx = dir.dx * tilesPerMs * dt;
+            const dy = dir.dy * tilesPerMs * dt;
+
+            let nx = entity.x + dx;
+            let ny = entity.y + dy;
+
+            if (Math.abs(entity.y - TUNNEL_ROW) < 0.5) {
+                if (nx < -0.5) nx = COLS - 0.5;
+                if (nx > COLS - 0.5) nx = -0.5;
+            }
+
+            const r = radiusTiles;
+            const samples = [
+                { sx: nx - r, sy: ny - r },
+                { sx: nx + r, sy: ny - r },
+                { sx: nx - r, sy: ny + r },
+                { sx: nx + r, sy: ny + r }
+            ];
+
+            let blocked = false;
+            for (const s of samples) {
+                const tileR = Math.floor(s.sy + 0.5);
+                const tileC = Math.floor(s.sx + 0.5);
+                if (isWall(tileR, tileC)) {
+                    blocked = true;
+                    break;
+                }
+            }
+
+            if (!blocked) {
+                entity.x = nx;
+                entity.y = ny;
+            } else {
+                // Stop exactly at grid when blocked for cleaner movement.
+                entity.x = Math.round(entity.x);
+                entity.y = Math.round(entity.y);
+            }
+        }
+        function scaredGhosts() {
+            ghosts.forEach(g => {
+                if (g.state === 'active') {
+                    g.isScared = true;
+                    g.scaredTimer = 8000;
+                }
+            });
+        }
+
+
+        function directionOutOfTunnel(ghost) {
+            const c = Math.round(ghost.x);
+            return (c <= COLS / 2) ? Directions.RIGHT : Directions.LEFT;
+        }
+
+        function chooseScaredDir(ghost) {
+            const options = [];
+            for (const dir of DIR_LIST) {
+                if (dir === oppositeDir(ghost.dir)) continue;
+                const test = { x: ghost.x, y: ghost.y, speed: ghost.speed };
+                moveWithCollision(test, dir, 1);
+                const r = Math.round(test.y);
+                const c = Math.round(test.x);
+                if (isWall(r, c)) continue;
+                if (isInTunnel(r, c)) continue;
+                options.push(dir);
+            }
+            if (!options.length) return ghost.dir;
+            return options[Math.floor(Math.random() * options.length)];
+        }
+
+        function chooseNormalDir(ghost) {
+            const options = [];
+            for (const dir of DIR_LIST) {
+                if (dir === oppositeDir(ghost.dir)) continue;
+                const test = { x: ghost.x, y: ghost.y, speed: ghost.speed };
+                moveWithCollision(test, dir, 1);
+                const r = Math.round(test.y);
+                const c = Math.round(test.x);
+                if (!isWall(r, c)) options.push(dir);
+            }
+
+            if (!options.length) return ghost.dir;
+
+            if (ghostMode === 'scatter') {
+                return options[Math.floor(Math.random() * options.length)];
+            }
+
+            // Chase: bias toward Pac-Man
+            options.sort((a, b) => {
+                const da = Math.hypot(pacman.x - (ghost.x + a.dx), pacman.y - (ghost.y + a.dy));
+                const db = Math.hypot(pacman.x - (ghost.x + b.dx), pacman.y - (ghost.y + b.dy));
+                return da - db;
+            });
+
+            return options[0];
+        }
+
+        function preventGhostOverlap(ghostIndex) {
+            const g = ghosts[ghostIndex];
+            for (let i = 0; i < ghosts.length; i++) {
+                if (i === ghostIndex) continue;
+                const other = ghosts[i];
+                const dx = g.x - other.x;
+                const dy = g.y - other.y;
+                const minDist = 0.75;
+                const distSq = dx * dx + dy * dy;
+                if (distSq < minDist * minDist) {
+                    const dist = Math.sqrt(distSq) || 0.001;
+                    const overlap = (minDist - dist) / 2;
+                    const nx = dx / dist;
+                    const ny = dy / dist;
+                    g.x += nx * overlap;
+                    g.y += ny * overlap;
+                    other.x -= nx * overlap;
+                    other.y -= ny * overlap;
+                }
+            }
+        }
+
+        function updatePacman(dt) {
+            if (!pacman.alive) {
+                pacman.deathTimer -= dt;
+                if (pacman.deathTimer <= 0) {
+                    lives--;
+                    pacman.x = 13.5;
+                    pacman.y = 23;
+                    pacman.dir = Directions.LEFT;
+                    pacman.alive = true;
+                }
+                return;
+            }
+            handleInput();
+            moveWithCollision(pacman, pacman.dir, dt);
+
+            const r = Math.round(pacman.y);
+            const c = Math.round(pacman.x);
+            const tile = map[r][c];
+            if (tile === '.') {
+                map[r] = map[r].substring(0, c) + ' ' + map[r].substring(c + 1);
+                score += 10;
+            } else if (tile === 'o') {
+                map[r] = map[r].substring(0, c) + ' ' + map[r].substring(c + 1);
+                score += 50;
+                scaredGhosts();
+            }
+            scoreEl.textContent = String(score).padStart(5, '0');
+        }
+
+        function killPacman() {
+            pacman.alive = false;
+            pacman.deathTimer = 2000;
+
+            ghosts.forEach((g, i) => {
+                g.x = [13, 13, 12, 14][i];
+                g.y = [11, 14, 14, 14][i];
+                g.state = i === 0 ? 'active' : 'house';
+                g.isScared = false;
+                g.scaredTimer = 0;
+                g.releaseTimer = 2000 + i * 2000;
+            });
+        }
+
+        function isIntersection(r, c) {
+            let open = 0;
+            if (!isWall(r, c - 1)) open++;
+            if (!isWall(r, c + 1)) open++;
+            if (!isWall(r - 1, c)) open++;
+            if (!isWall(r + 1, c)) open++;
+            return open >= 3;
+        }
+
+        function updateGhost(ghost, dt, index) {
+            ghost.x = Math.round(ghost.x);
+            ghost.y = Math.round(ghost.y);
+
+            if (ghost.state === 'eyes') {
+                ghost.isScared = false;
+                ghost.scaredTimer = 0;
+                const dx = 13 - ghost.x;
+                const dy = 14 - ghost.y;
+                ghost.dir = Math.abs(dx) > Math.abs(dy)
+                    ? (dx > 0 ? Directions.RIGHT : Directions.LEFT)
+                    : (dy > 0 ? Directions.DOWN : Directions.UP);
+
+                moveWithCollision(ghost, ghost.dir, dt, 0.2);
+
+                if (Math.abs(dx) < 0.5 && Math.abs(dy) < 0.5) {
+                    ghost.state = 'house';
+                    ghost.releaseTimer = 3000;
+                    ghost.x = 13;
+                    ghost.y = 14;
+                }
+                return;
+            }
+
+            if (ghost.state === 'house') {
+                ghost.releaseTimer -= dt;
+                if (ghost.releaseTimer <= 0) {
+                    ghost.state = 'leaving';
+                    ghost.dir = Directions.UP;
+                }
+                return;
+            }
+
+            if (ghost.state === 'leaving') {
+                moveWithCollision(ghost, ghost.dir, dt);
+                if (ghost.y <= 11) {
+                    ghost.state = 'active';
+                }
+                return;
+            }
+
+            if (ghost.isScared) {
+                ghost.scaredTimer -= dt;
+                if (ghost.scaredTimer <= 0) {
+                    ghost.isScared = false;
+                    ghost.scaredTimer = 0;
+                }
+            }
+
+            const nearCenter =
+                Math.abs(ghost.x - Math.round(ghost.x)) < 0.1 &&
+                Math.abs(ghost.y - Math.round(ghost.y)) < 0.1;
+
+            const r = Math.round(ghost.y);
+            const c = Math.round(ghost.x);
+
+            const reachedCenter = moveGrid(ghost, ghost.dir, dt);
+
+            if (reachedCenter) {
+                const r = ghost.y;
+                const c = ghost.x;
+
+                if (isIntersection(r, c)) {
+                    ghost.dir = ghost.isScared
+                        ? chooseScaredDir(ghost)
+                        : chooseNormalDir(ghost);
+                }
+            }
+
+            moveGhost(ghost, dt);
+            // Tunnel wrap (grid-safe)
+            if (ghost.y === TUNNEL_ROW) {
+                if (ghost.x < -1) ghost.x = COLS;
+                if (ghost.x > COLS) ghost.x = -1;
+            }
+        }
+
+        function updateGhosts(dt) {
+            for (let i = 0; i < ghosts.length; i++) {
+                updateGhost(ghosts[i], dt, i);
+            }
+        }
+
+        function checkCollisions() {
+            ghosts.forEach(g => {
+                if (g.state === 'eyes') return;
+
+                const dx = g.x - pacman.x;
+                const dy = g.y - pacman.y;
+
+                if (dx * dx + dy * dy < 0.32 * 0.32) {
+                    if (g.isScared) {
+                        g.state = 'eyes';
+                        g.isScared = false;
+                        g.scaredTimer = 0;
+                        score += 200;
+                        scoreEl.textContent = String(score).padStart(5, '0');
+                    } else if (pacman.alive) {
+                        killPacman();
+                    }
+                }
+            });
+        }
+
+        function drawMap() {
+            ctx.clearRect(0, 0, canvas.width, canvas.height);
+
+            for (let r = 0; r < ROWS; r++) {
+                for (let c = 0; c < COLS; c++) {
+                    const ch = map[r][c];
+                    const x = c * TILE;
+                    const y = r * TILE;
+
+                    if (ch === '#') {
+                        ctx.fillStyle = (r === TUNNEL_ROW) ? '#020221' : 'black';
+                        ctx.fillRect(x, y, TILE, TILE);
+
+                        ctx.strokeStyle = (r === TUNNEL_ROW) ? '#2525c0' : '#0022ff';
+                        ctx.lineWidth = 2;
+                        ctx.strokeRect(x + 2, y + 2, TILE - 4, TILE - 4);
+                    } else if (ch === '.') {
+                        ctx.fillStyle = '#ffe6a3';
+                        ctx.beginPath();
+                        ctx.arc(x + TILE / 2, y + TILE / 2, 2.6, 0, Math.PI * 2);
+                        ctx.fill();
+                    } else if (ch === 'o') {
+                        ctx.fillStyle = '#ffb347';
+                        ctx.beginPath();
+                        ctx.arc(x + TILE / 2, y + TILE / 2, 6, 0, Math.PI * 2);
+                        ctx.fill();
+                        ctx.strokeStyle = 'rgba(255, 179, 71, 0.9)';
+                        ctx.lineWidth = 1.2;
+                        ctx.stroke();
+                    } else {
+                        ctx.fillStyle = (r === TUNNEL_ROW) ? '#050015' : 'transparent';
+                        ctx.fillRect(x, y, TILE, TILE);
+                    }
+                }
+            }
+        }
+
+        function drawPacman() {
+            const x = pacman.x * TILE + TILE / 2;
+            const y = pacman.y * TILE + TILE / 2;
+            const radius = TILE / 2 - 2;
+
+            const time = performance.now() / 120;
+            const mouthOpen = pacman.alive
+                ? (Math.sin(time) + 1) / 2
+                : Math.max(0, pacman.deathTimer / 2000);
+
+            const mouthAngle = 0.15 + mouthOpen * 0.7;
+
+            ctx.save();
+            ctx.translate(x, y);
+
+            let angle = 0;
+            if (pacman.dir === Directions.RIGHT) angle = 0;
+            else if (pacman.dir === Directions.LEFT) angle = Math.PI;
+            else if (pacman.dir === Directions.UP) angle = -Math.PI / 2;
+            else if (pacman.dir === Directions.DOWN) angle = Math.PI / 2;
+            ctx.rotate(angle);
+
+            ctx.fillStyle = '#ffe600';
+            ctx.beginPath();
+            ctx.moveTo(0, 0);
+            ctx.arc(0, 0, radius, mouthAngle, Math.PI * 2 - mouthAngle);
+            ctx.closePath();
+            ctx.fill();
+
+            ctx.restore();
+        }
+
+        function drawGhost(ghost) {
+            const x = ghost.x * TILE + TILE / 2;
+            const y = ghost.y * TILE + TILE / 2;
+            const radius = TILE / 2 - 2;
+
+            ctx.save();
+            ctx.translate(x, y);
+
+            const bodyColor = ghost.isScared ? '#294cff' :
+                (ghost.color === 'red' ? '#ff4b4b' :
+                    ghost.color === 'pink' ? '#ff8ad4' :
+                        ghost.color === 'cyan' ? '#4bfaff' :
+                            '#ffb347');
+
+            ctx.fillStyle = bodyColor;
+            ctx.beginPath();
+            ctx.arc(0, -radius * 0.1, radius, Math.PI, 0);
+            ctx.lineTo(radius, radius * 0.9);
+            const feet = 4;
+            for (let i = feet; i >= 0; i--) {
+                const px = -radius + (2 * radius / feet) * i;
+                const py = radius * 0.9 + (i % 2 === 0 ? 3 : -1);
+                ctx.lineTo(px, py);
+            }
+            ctx.closePath();
+            ctx.fill();
+
+            const eyeOffsetX = radius * 0.35;
+            const eyeOffsetY = -radius * 0.2;
+            ctx.fillStyle = '#fdfdff';
+            ctx.beginPath();
+            ctx.arc(-eyeOffsetX, eyeOffsetY, radius * 0.26, 0, Math.PI * 2);
+            ctx.arc(eyeOffsetX, eyeOffsetY, radius * 0.26, 0, Math.PI * 2);
+            ctx.fill();
+
+            const dir = ghost.isScared ? { dx: 0, dy: 0 } : ghost.dir;
+            const pupilShiftX = (dir.dx || 0) * radius * 0.18;
+            const pupilShiftY = (dir.dy || 0) * radius * 0.18;
+            ctx.fillStyle = '#001137';
+            ctx.beginPath();
+            ctx.arc(-eyeOffsetX + pupilShiftX, eyeOffsetY + pupilShiftY, radius * 0.12, 0, Math.PI * 2);
+            ctx.arc(eyeOffsetX + pupilShiftX, eyeOffsetY + pupilShiftY, radius * 0.12, 0, Math.PI * 2);
+            ctx.fill();
+
+            ctx.restore();
+        }
+
+        function drawGhosts() {
+            ghosts.forEach(drawGhost);
+        }
+
+        function updateLogic(dt) {
+            updateGhostMode(dt);
+            updatePacman(dt);
+            updateGhosts(dt);
+            checkCollisions();
+        }
+
+
+        function render() {
+            drawMap();
+            drawPacman();
+            drawGhosts();
+        }
+
+        function loop(timestamp) {
+            if (!lastTime) lastTime = timestamp;
+            let delta = timestamp - lastTime;
+            if (delta > 100) delta = 100;
+
+            accumulator += delta;
+            while (accumulator >= DT_MS) {
+                updateLogic(DT_MS);
+                accumulator -= DT_MS;
+            }
+
+            render();
+            lastTime = timestamp;
+            requestAnimationFrame(loop);
+        }
+
+        requestAnimationFrame(loop);
+    </script>
+</body>
+
+</html>
